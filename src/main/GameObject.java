@@ -1,5 +1,6 @@
 package main;
 
+import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -9,10 +10,10 @@ public abstract class GameObject {
 	protected String name;
 	protected int x, y;
 	protected int width, height;
-	protected Scene scene;
+	protected ProjectGame game;
 	
-	public GameObject(Scene scene, String name, int x, int y, int width, int height) {
-		this.scene = scene;
+	public GameObject(ProjectGame game, String name, int x, int y, int width, int height) {
+		this.game = game;
 		this.name = name;
 		this.x = x;
 		this.y = y;
@@ -20,8 +21,8 @@ public abstract class GameObject {
 		this.height = height;
 	}
 	
-	public GameObject(Scene scene, String name, int x, int y) {
-		this.scene = scene;
+	public GameObject(ProjectGame game, String name, int x, int y) {
+		this.game = game;
 		this.name = name;
 		this.x = x;
 		this.y = y;
@@ -34,8 +35,18 @@ public abstract class GameObject {
 	public void drawCollisionShape (GraphicsContext gc) {
 		if (ProjectGame.Debug.DRAWCOLLISIONSHAPE) {
 			gc.setStroke(Color.GREEN);
-			gc.strokeRect(x, y, width, height);
+			gc.strokeRect(x - width/2, y - height/2, width, height);
 		}
+	}
+	
+	public int[] calculBorder(int x, int y) {
+		int[] borders = {
+			x - width / 2,
+			x + width / 2,
+			y - height / 2,
+			y + height / 2
+		};
+		return borders;
 	}
 	
 	

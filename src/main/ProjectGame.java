@@ -20,12 +20,14 @@ public class ProjectGame extends Application  {
 	public static final String NAME = "ProjectGame";
 
 	public static class Debug {
-		public static boolean DRAWCOLLISIONSHAPE = false;
+		public static boolean DRAWCOLLISIONSHAPE = true;
 	}
 	
 	private Room currentRoom;
+
 	private ArrayList<GameObject> objects = new ArrayList<>();
 	private Player player;
+	public Scene scene;
 	
     public static void main(String[] args) {
         launch(args);
@@ -37,7 +39,7 @@ public class ProjectGame extends Application  {
 		stage.setHeight(ProjectGame.HEIGHT);
 		
 		StackPane root = new StackPane();
-        Scene scene = new Scene(root);
+        scene = new Scene(root);
         stage.setScene(scene);
         
         Canvas canvas = new Canvas(ProjectGame.WIDTH, ProjectGame.HEIGHT);
@@ -57,9 +59,9 @@ public class ProjectGame extends Application  {
     }
     
     private void setup(Scene scene, GraphicsContext gc) {
-    	currentRoom = new Room(scene, 12);
-    	player = new Player(scene, ProjectGame.WIDTH/2 - ProjectGame.CELLSIZE/2, ProjectGame.HEIGHT/2 - ProjectGame.CELLSIZE/2);
-    	objects.add(player);
+    	currentRoom = new Room(this, 12);
+    	player = new Player(this, ProjectGame.WIDTH/2 - ProjectGame.CELLSIZE/2, ProjectGame.HEIGHT/2 - ProjectGame.CELLSIZE/2);
+    	//objects.add(player);
     }
     
     private void update(GraphicsContext gc) {
@@ -72,5 +74,9 @@ public class ProjectGame extends Application  {
         	obj.drawCollisionShape(gc);
         }
     }
+    
+    public Room getCurrentRoom() {
+		return currentRoom;
+	}
 
 }

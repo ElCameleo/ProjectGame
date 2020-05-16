@@ -1,7 +1,6 @@
 package mob;
 
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import main.ProjectGame;
@@ -10,11 +9,10 @@ public class Player extends Mob {
 	
 	private int[] controls = { 0, 0, 0, 0 };
 
-	public Player(Scene scene, int x, int y) {
-		super(scene, "Player", x, y, ProjectGame.CELLSIZE, ProjectGame.CELLSIZE, Color.RED, 2);
-		
-		scene.addEventFilter(KeyEvent.KEY_PRESSED, keyPressedEventHandler);
-        scene.addEventFilter(KeyEvent.KEY_RELEASED, keyReleasedEventHandler);
+	public Player(ProjectGame game, int x, int y) {
+		super(game, "Player", x, y, ProjectGame.CELLSIZE, ProjectGame.CELLSIZE, Color.RED, 2);
+		game.scene.addEventFilter(KeyEvent.KEY_PRESSED, keyPressedEventHandler);
+		game.scene.addEventFilter(KeyEvent.KEY_RELEASED, keyReleasedEventHandler);
 	}
 	
 	private EventHandler<KeyEvent> keyPressedEventHandler = (event -> {
@@ -38,8 +36,12 @@ public class Player extends Mob {
 
 	@Override
 	public void move() {
-		x += (controls[2] - controls[0]) * speed;
-		y += (controls[3] - controls[1]) * speed;
+		int newX = x + (controls[2] - controls[0]) * speed;
+		int newY = y + (controls[3] - controls[1]) * speed;
+		if (game.getCurrentRoom().canMoveTo(calculBorder(newX, newY))) {
+			x = newX;
+			y = newY;
+		}
 	}
 
 }
