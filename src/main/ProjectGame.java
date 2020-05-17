@@ -25,9 +25,9 @@ public class ProjectGame extends Application  {
 	
 	private Room currentRoom;
 
-	private ArrayList<GameObject> objects = new ArrayList<>();
 	private Player player;
 	public Scene scene;
+	public Handler handler;
 	
     public static void main(String[] args) {
         launch(args);
@@ -59,20 +59,19 @@ public class ProjectGame extends Application  {
     }
     
     private void setup(Scene scene, GraphicsContext gc) {
+    	new Assets();
+    	handler = new Handler(this);
     	currentRoom = new Room(this, 12);
     	player = new Player(this, ProjectGame.WIDTH/2 - ProjectGame.CELLSIZE/2, ProjectGame.HEIGHT/2 - ProjectGame.CELLSIZE/2);
-    	//objects.add(player);
+    	handler.add(player);
+    	handler.spawn("Soldier", 6);
     }
     
     private void update(GraphicsContext gc) {
     	gc.setFill( Color.BLACK );
         gc.fillRect(0, 0, ProjectGame.WIDTH, ProjectGame.HEIGHT);
         currentRoom.render(gc);
-        for (GameObject obj: objects) {
-        	obj.update();
-        	obj.render(gc);
-        	obj.drawCollisionShape(gc);
-        }
+        handler.process(gc);
     }
     
     public Room getCurrentRoom() {

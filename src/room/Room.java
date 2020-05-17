@@ -3,6 +3,7 @@ package room;
 import java.util.ArrayList;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import main.GameObject;
 import main.ProjectGame;
@@ -10,18 +11,22 @@ import main.ProjectGame;
 public class Room extends GameObject {
 	
 	private int size;
-	private ArrayList<ArrayList<Integer>> grid = new ArrayList<>();
+	private ArrayList<ArrayList<Cell>> grid = new ArrayList<>();
+	private ArrayList<int[]> spawnPosition = new ArrayList<>();
 
 	public Room (ProjectGame game, int size) {
 		super(game, "ROOM", (ProjectGame.WIDTH - size * ProjectGame.CELLSIZE) / 2, (ProjectGame.HEIGHT - size * ProjectGame.CELLSIZE) / 2);
 		this.size = size;
-		grid = RoomGenerator.generate(3, 2, 2, size);
+		
+		RoomGenerator roomGenerator = new RoomGenerator(6, 4, 4, size);
+		grid = roomGenerator.getGrid();
+		spawnPosition = roomGenerator.getSpawnPosition();
 	}
 	
 	private boolean checkBorders (int x, int y) {
 		int nx = (x - this.x) / ProjectGame.CELLSIZE;
 		int ny = (y - this.y) / ProjectGame.CELLSIZE;
-		return (x - this.x) > 0 && (y - this.y) > 0 && nx >= 0 && nx < size && ny >= 0 && ny < size && grid.get(nx).get(ny) == 1;
+		return (x - this.x) > 0 && (y - this.y) > 0 && nx >= 0 && nx < size && ny >= 0 && ny < size && grid.get(nx).get(ny).value == 1;
 	}
 	
 	public boolean canMoveTo (int[] borders) {
@@ -37,7 +42,20 @@ public class Room extends GameObject {
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
-		
+	}
+	
+	private int[] roomToCart (int x, int y) {
+		return new int[] {
+				this.x + x * ProjectGame.CELLSIZE,
+				this.y + y * ProjectGame.CELLSIZE,
+		};
+	}
+	
+	public int[] getAvaiblePos() {
+		int randX, randY;
+		int[] pos = spawnPosition.get((int) (Math.random() * spawnPosition.size()));
+		spawnPosition.remove(pos);
+		return roomToCart(pos[0], pos[1]);
 	}
 
 	@Override
@@ -49,9 +67,8 @@ public class Room extends GameObject {
 
 		for (int i = 0 ; i < size ; i++) {
 			for (int j = 0 ; j < size ; j++) {
-				if (grid.get(i).get(j) == 1) {
-					gc.fillRect(x + i * ProjectGame.CELLSIZE, y + j * ProjectGame.CELLSIZE, ProjectGame.CELLSIZE, ProjectGame.CELLSIZE);
-					gc.strokeRect(x + i * ProjectGame.CELLSIZE, y + j * ProjectGame.CELLSIZE, ProjectGame.CELLSIZE, ProjectGame.CELLSIZE);
+				if (grid.get(i).get(j).value == 1) {
+					gc.drawImage((Image) grid.get(i).get(j).img, x + i * ProjectGame.CELLSIZE, y + j * ProjectGame.CELLSIZE, ProjectGame.CELLSIZE, ProjectGame.CELLSIZE);
 				}
 			}
 		}
